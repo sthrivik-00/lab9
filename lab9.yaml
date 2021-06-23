@@ -1,0 +1,123 @@
+apiVersion: v1
+items:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: lab9
+      app.kubernetes.io/component: lab9
+      app.kubernetes.io/instance: lab9
+    name: lab9
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: lab9
+      app.kubernetes.io/component: lab9
+      app.kubernetes.io/instance: lab9
+    name: lab9
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: lab9:latest
+    postCommit: {}
+    resources: {}
+    source:
+      git:
+        uri: https://github.com/sthrivik-00/lab9
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: php:7.3
+          namespace: openshift
+      type: Source
+    triggers:
+    - github:
+        secret: EcKrvxr0K7C3AsRbAO2a
+      type: GitHub
+    - generic:
+        secret: 2gFmQpFtbKzweFM35DHO
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"lab9:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"lab9\")].image"}]'
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: lab9
+      app.kubernetes.io/component: lab9
+      app.kubernetes.io/instance: lab9
+    name: lab9
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        deployment: lab9
+    strategy: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          deployment: lab9
+      spec:
+        containers:
+        - image: ' '
+          name: lab9
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          resources: {}
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: lab9
+      app.kubernetes.io/component: lab9
+      app.kubernetes.io/instance: lab9
+    name: lab9
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: 8443-tcp
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+    selector:
+      deployment: lab9
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}
